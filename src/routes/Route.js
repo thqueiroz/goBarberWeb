@@ -2,8 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Redirect, Route } from 'react-router-dom';
 
-import AuthLayout from '../pages/_layouts/auth';
-import DefaultLayout from '../pages/_layouts/default';
+import AuthLayout from '~/pages/_layouts/auth';
+import DefaultLayout from '~/pages/_layouts/default';
 
 export default function RouteWrapper({
     component: Component,
@@ -20,13 +20,19 @@ export default function RouteWrapper({
         return <Redirect to="/dashboard" />;
     }
 
-    const Layout = signet ? AuthLayout : DefaultLayout;
+    const Layout = signet ? DefaultLayout : AuthLayout;
 
-    return <Route {...rest} render={props => (
-        <Layout>
-            <Component {...props} />
-        </Layout>
-    )} />;
+    return (
+        <Route
+            // eslint-disable-next-line react/jsx-props-no-spreading
+            {...rest}
+            render={props => (
+                <Layout>
+                    <Component {...props} />
+                </Layout>
+            )}
+        />
+    );
 }
 
 RouteWrapper.propTypes = {
