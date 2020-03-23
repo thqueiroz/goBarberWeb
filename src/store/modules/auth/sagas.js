@@ -40,7 +40,8 @@ export function* signUp({ payload }) {
         yield call(api.post, 'users', {
             name,
             email,
-            password
+            password,
+            provider: true
         });
 
         history.push('/');
@@ -55,13 +56,18 @@ export function setToken({ payload }) {
 
     const { token } = payload.auth;
 
-    if (!token) {
+    if (token) {
         api.defaults.headers.Authorization = `Bearer ${token}`;
     }
 }
 
-export default all(
+export function signOut() {
+    history.push('/');
+}
+
+export default all([
     takeLatest('persist/REHYDRATE', setToken),
-    takeLatest('@auth/SIGN_UP_REQUEST', signIn),
-    takeLatest('@auth/SIGN_IN_REQUEST', signUp)
-);
+    takeLatest('@auth/SIGN_IN_REQUEST', signIn),
+    takeLatest('@auth/SIGN_UP_REQUEST', signUp),
+    takeLatest('@auth/SIGN_OUT', signOut)
+]);
